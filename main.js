@@ -1,111 +1,159 @@
-import { logs } from "./date.js"
-import { getRandom, createElement, playerWins, createReloadButton } from './utils.js'
-import { player1, player2 } from './players.js'
-import { enemyAttack, playerAttack } from './attack.js';
-const $arenas = document.querySelector('.arenas');
-const $formFight = document.querySelector('.control')
-const $chat = document.querySelector('.chat');
 
-function createPlayer({ player, hp, name, img, attack }) {
+import { Game } from "./Game.js"
+const game = new Game({})
+game.start()
 
-    const $player = createElement('div', 'player' + player);
-    const $progressbar = createElement('div', 'progressbar');
-    const $character = createElement('div', 'character');
-    const $life = createElement('div', 'life');
-    const $name = createElement('div', 'name');
-    const $img = createElement('img');
 
-    $life.style.width = hp + '%';
-    $name.innerText = name;
-    $img.src = img;
+// import { logs } from "./date.js"
+// import { getRandom, createElement, playerWins, createReloadButton } from './utils.js'
+// // import { player1, player2 } from './players.js'
+// import { enemyAttack, playerAttack } from './attack.js';
+// import { Player } from "./Player.js";
 
-    $progressbar.appendChild($name);
-    $progressbar.appendChild($life);
+// const player1 = new Player({
+//     player: 1,
+//     name: 'SCORPION',
+//     hp: 100,
+//     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif'
+// })
 
-    $character.appendChild($img);
+// const player2 = new Player({
+//     player: 2,
+//     name: 'KITANA',
+//     hp: 100,
+//     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif'
+// })
 
-    $player.appendChild($progressbar);
-    $player.appendChild($character);
+// const $arenas = document.querySelector('.arenas');
+// const $formFight = document.querySelector('.control')
+// const $chat = document.querySelector('.chat');
 
-    attack(name);
-    return $player
-};
+// function createPlayer({ player, hp, name, img, attack }) {
 
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
+//     const $player = createElement('div', `player${player}`);
+//     const $progressbar = createElement('div', 'progressbar');
+//     const $character = createElement('div', 'character');
+//     const $life = createElement('div', 'life');
+//     const $name = createElement('div', 'name');
+//     const $img = createElement('img');
 
-let hp1 = 0;
-let hp2 = 0;
-const generateLogs = (type, { name: name1 }, { name: name2 }, val) => {
-    let text = ''
-    const a = logs[type][getRandom(type.length) - 1].replace('[playerKick]', name1).replace('[playerDefence]', name2);
-    const b = logs[type][getRandom(type.length) - 1].replace('[playerDefence]', name1).replace('[playerKick]', name2);
-    const date = new Date();
-    const time = `${date.getHours()}:${date.getMinutes()}`
-    switch (type) {
-        case "start":
-            text = logs["start"]
-                .replace('[time]', time)
-                .replace('[player1]', name1)
-                .replace('[player2]', name2);
-            break;
-        case "hit":
-            hp1 += val;
-            text = `${time} ${a} -${val} [${100 - hp1}/100]`;
-            break;
-        case "defence":
-            hp2 += val;
-            text = `${time} ${b} -${val} [${100 - hp2}/100]`;
-            break;
-        case "end":
-            text = logs["end"][getRandom(type.length) - 1].replace('[playerWins]', name2).replace('[playerLose]', name1);
-            break;
-        case "draw":
-            text = logs["draw"];
-            break;
-        default:
-            text = "ups something wrong!";
-            break;
-    }
-    const el = `<p>${text}</p>`;
-    $chat.insertAdjacentHTML('afterbegin', el);
-}
+//     $life.style.width = hp + '%';
+//     $name.innerText = name;
+//     $img.src = img;
 
-generateLogs("start", player1, player2)
-$formFight.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const enemy = enemyAttack();
-    const player = playerAttack($formFight);
-    const { value: valueEnemy, defence: defenceEnemy, hit: hitEnemy } = enemy;
-    const { value: valuePlayer, defence: defencePlayer, hit: hitPlayer } = player;
-    if (defencePlayer !== hitEnemy) {
-        player1.changeRenderHP(valueEnemy);
-        generateLogs('hit', player2, player1, valueEnemy);
-    }
-    if (defenceEnemy !== hitPlayer) {
-        player2.changeRenderHP(valuePlayer);
-        generateLogs('defence', player1, player2, valuePlayer);
-    }
+//     $progressbar.appendChild($name);
+//     $progressbar.appendChild($life);
 
-    showResult();
+//     $character.appendChild($img);
 
-})
+//     $player.appendChild($progressbar);
+//     $player.appendChild($character);
 
-const showResult = () => {
-    const { hp: hp1, name: name1 } = player1;
-    const { hp: hp2, name: name2 } = player2;
-    if (hp1 === 0 || hp2 === 0) {
-        $formFight[6].disabled = true;
-        createReloadButton();
-    }
-    if (hp1 === 0 && hp1 < hp2) {
-        $arenas.appendChild(playerWins(name2));
-        generateLogs("end", player1, player2);
-    } else if (hp2 === 0 && hp2 < hp1) {
-        $arenas.appendChild(playerWins(name1));
-        generateLogs("end", player1, player2);
-    } else if (hp1 === 0 && hp2 === 0) {
-        $arenas.appendChild(playerWins());
-        generateLogs("draw", player1, player2);
-    }
-}
+//     attack(name);
+//     return $player
+// };
+
+// function getTime() {
+//     const date = new Date();
+//     return `${date.getHours()}:${date.getMinutes()}`
+// }
+
+// function getTextLog(type, playerName1, playerName2) {
+//     switch (type) {
+//         case 'start':
+//             return logs[type]
+//                 .replace('[player1]', playerName1)
+//                 .replace('[player2]', playerName2)
+//                 .replace('[time]', getTime());
+//             break;
+//         case 'hit':
+//             return logs[type][getRandom(logs[type].length) - 1]
+//                 .replace('[playerKick]', playerName1)
+//                 .replace('[playerDefence]', playerName2)
+//             break;
+//         case 'defence':
+//             return logs[type][getRandom(logs[type].length) - 1]
+//                 .replace('[playerKick]', playerName1)
+//                 .replace('[playerDefence]', playerName2)
+//             break;
+//         case 'end':
+//             return logs[type][getRandom(logs[type].length) - 1]
+//                 .replace('[playerWins]', playerName1)
+//                 .replace('[playerLose]', playerName2)
+//             break;
+//         case 'draw':
+//             return logs[type];
+//             break;
+//     }
+// }
+// function generateLogs(type, { name: name1 } = {}, { name: name2, hp } = {}, valueAttack) {
+//     let text = getTextLog(type, name1, name2)
+
+//     switch (type) {
+//         case 'hit':
+//             text = `${getTime()} ${text} -${valueAttack} [${hp}/100]`;
+//             break;
+//         case 'defence':
+//         case 'end':
+//         case 'draw':
+//             text = `${getTime()} ${text}`;
+//             break;
+//     }
+
+//     const el = `<p>${text}</p>`;
+//     $chat.insertAdjacentHTML('afterbegin', el);
+
+// }
+
+
+// $formFight.addEventListener('submit', function (e) {
+//     e.preventDefault();
+//     const enemy = enemyAttack();
+//     const player = playerAttack($formFight);
+//     console.log(player)
+
+//     const { value: valueEnemy, defence: defenceEnemy, hit: hitEnemy } = enemy;
+//     const { value: valuePlayer, defence: defencePlayer, hit: hitPlayer } = player;
+//     if (defencePlayer !== hitEnemy) {
+//         player1.changeRenderHP(valueEnemy);
+//         generateLogs('hit', player2, player1, valueEnemy);
+//     } else {
+//         generateLogs('defance', player2, player1);
+//     }
+//     if (defenceEnemy !== hitPlayer) {
+//         player2.changeRenderHP(valuePlayer);
+//         generateLogs('hit', player1, player2, valuePlayer);
+//     } else {
+//         generateLogs('defence', player1, player2);
+
+//     }
+
+//     showResult();
+
+// })
+
+// const showResult = () => {
+//     const { hp: hp1, name: name1 } = player1;
+//     const { hp: hp2, name: name2 } = player2;
+//     if (hp1 === 0 || hp2 === 0) {
+//         $formFight[6].disabled = true;
+//         createReloadButton();
+//     }
+//     if (hp1 === 0 && hp1 < hp2) {
+//         $arenas.appendChild(playerWins(name2));
+//         generateLogs("end", player2, player1);
+//     } else if (hp2 === 0 && hp2 < hp1) {
+//         $arenas.appendChild(playerWins(name1));
+//         generateLogs("end", player1, player2);
+//     } else if (hp1 === 0 && hp2 === 0) {
+//         $arenas.appendChild(playerWins());
+//         generateLogs("draw");
+//     }
+// }
+
+// function init() {
+//     $arenas.appendChild(createPlayer(player1));
+//     $arenas.appendChild(createPlayer(player2));
+//     generateLogs('start', player1, player2)
+// }
+// init();
