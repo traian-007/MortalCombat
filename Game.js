@@ -110,7 +110,6 @@ export class Game extends Player {
             this.generateLogs('defence', this.player1, this.player2);
 
         }
-
         this.showResult();
     }
     fightPlayers = () => {
