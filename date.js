@@ -1,5 +1,6 @@
+import { Player } from "./Player.js";
 
-const logs = {
+export const logs = {
     start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
     end: [
         'Результат удара [playerWins]: [playerLose] - труп',
@@ -38,4 +39,24 @@ const logs = {
     ],
     draw: 'Ничья - это тоже победа!'
 };
-export default logs;
+
+export const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20
+}
+
+export const ATTACK = ['head', 'body', 'foot']
+export const player1 = {
+    player: 1,
+    name: 'SCORPION',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif'
+}
+
+export const player2 = {
+    player: 2,
+    name: 'KITANA',
+    hp: 100,
+    img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif'
+}
