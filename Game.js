@@ -1,14 +1,14 @@
 import { Player } from "./Player.js"
-import { logs, player2, HIT, ATTACK, player1 } from './date.js'
+// import { logs, player2, HIT, ATTACK, player1 } from './date.js'
+import { logs } from './date.js'
 
-export class Game extends Player {
+export class Game {
     constructor(props) {
-        super(props);
-        this.player1 = new Player(player1);
-        this.player2 = new Player(player2);
+        this.player1 = new Player(JSON.parse(localStorage.getItem('player1')));
+        this.player2 = new Player({});
         this.logs = logs;
-        this.HIT = HIT;
-        this.ATTACK = ATTACK;
+        // this.HIT = HIT;
+        // this.ATTACK = ATTACK;
         this.$arenas = document.querySelector('.arenas');
         this.$formFight = document.querySelector('.control');
         this.$chat = document.querySelector('.chat');
@@ -45,27 +45,33 @@ export class Game extends Player {
         }
         return $loseTitle;
     };
-    enemyAttack = () => {
-        const hit = this.ATTACK[this.getRandom(3) - 1];
-        const defence = this.ATTACK[this.getRandom(3) - 1];
-        return {
-            value: this.getRandom(this.HIT[hit]),
-            hit,
-            defence
-        }
+    enemyAttack = async () => {
+        // const hit = this.ATTACK[this.getRandom(3) - 1];
+        // const defence = this.ATTACK[this.getRandom(3) - 1];
+        // return {
+        //     value: +this.getRandom(this.HIT[hit]),
+        //     hit,
+        //     defence
+        // }
+        const attack1 = await this.fight().then(res => res.json()).then(data => data)
+        const attack = attack1.player2
+        console.log(attack)
+        return attack
     }
 
-    playerAttack = () => {
-        const attack = {}
+    playerAttack = async () => {
+        const attack1 = await this.fight().then(res => res.json()).then(data => data)
+        const attack = attack1.player2
+        console.log(attack)
 
         for (let item of this.$formFight) {
-            if (item.checked && item.name === 'hit') {
-                attack.value = this.getRandom(this.HIT[item.value]);
-                attack.hit = item.value;
-            }
-            if (item.checked && item.name === 'defence') {
-                attack.defence = item.value;
-            }
+            // if (item.checked && item.name === 'hit') {
+            //     attack.value = this.getRandom(this.HIT[item.value]);
+            //     attack.hit = item.value;
+            // }
+            // if (item.checked && item.name === 'defence') {
+            //     attack.defence = item.value;
+            // }
             item.checked = false;
         }
         return attack;
@@ -91,20 +97,23 @@ export class Game extends Player {
             this.generateLogs("draw");
         }
     }
-    ab = (e) => {
+    ab = async (e) => {
         e.preventDefault();
-        const enemy = this.enemyAttack();
-        const player = this.playerAttack();
+        const enemy = await this.enemyAttack();
+        const player = await this.playerAttack();
+        // console.log(enemy, player)
         const { value: valueEnemy, defence: defenceEnemy, hit: hitEnemy } = enemy;
         const { value: valuePlayer, defence: defencePlayer, hit: hitPlayer } = player;
         if (defencePlayer !== hitEnemy) {
             this.player1.changeRenderHP(valueEnemy);
+            // console.log('player11', this.player1)
             this.generateLogs('hit', this.player2, this.player1, valueEnemy);
         } else {
             this.generateLogs('defance', this.player2, this.player1);
         }
         if (defenceEnemy !== hitPlayer) {
             this.player2.changeRenderHP(valuePlayer);
+
             this.generateLogs('hit', this.player1, this.player2, valuePlayer);
         } else {
             this.generateLogs('defence', this.player1, this.player2);
@@ -191,12 +200,45 @@ export class Game extends Player {
         const el = `<p>${text}</p>`;
         this.$chat.insertAdjacentHTML('afterbegin', el);
     }
-    start = () => {
+    fight = async () => {
+        const data = fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+            method: 'POST',
+            body: JSON.stringify({
+                hit: this.hit,
+                defence: this.defence,
+            })
+        });
+        return data
+    }
 
+    getPlayerServer = async (num) => {
+        const body = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose').then(response => response.json())
+
+        const player = new Player({
+            ...body,
+            player: num,
+            rootSelector: 'arenas'
+        })
+        return player
+    }
+    getLocalPlayer = async (num) => {
+        const pl = await JSON.parse(localStorage.getItem('player1'))
+        const player = new Player({
+            ...pl,
+            player: num,
+            rootSelector: 'arenas'
+        })
+        return player
+    }
+    start = async () => {
+        this.player1 = await this.getLocalPlayer(1)
+        this.player2 = await this.getPlayerServer(2)
+        console.log(this.player1, this.player2)
         this.$arenas.appendChild(this.createPlayer(this.player1));
         this.$arenas.appendChild(this.createPlayer(this.player2));
         this.generateLogs('start', this.player1, this.player2)
         this.fightPlayers()
+
     }
 
 }
