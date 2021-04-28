@@ -29,7 +29,7 @@ export class Game {
         $reloadButton.innerText = 'Reload';
 
         $reloadButton.addEventListener('click', function () {
-            window.location.pathname = 'main.html';
+            window.location.pathname = 'index.html';
         })
 
         $reloadButtonDiv.appendChild($reloadButton);
