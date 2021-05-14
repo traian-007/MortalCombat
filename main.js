@@ -1,9 +1,57 @@
 
 import { Game } from "./Game.js"
+
 const game = new Game({})
 game.start()
+console.log(JSON.parse(localStorage.getItem('player1')))
 
+// let player1;
+// let player2;
+// let hit;
+// let defence;
+// let value;
+// class Game {
 
+//     getRandom = (num) => {
+//         return Math.ceil(Math.random() * num)
+//     }
+//     getPlayers = async () => {
+//         const body = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json()).then(data => data)
+//         return body;
+//     }
+//     getFight = async () => {
+//         const fight = fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+//             method: 'POST',
+//             body: JSON.stringify({
+//                 hit,
+//                 defence,
+//             })
+//         });
+//         return fight
+//     }
+//     start = async () => {
+//         const players = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json()).then(data => data);
+//         const f = await this.getFight();
+//         const p1 = players[this.getRandom(players.length) - 1]
+//         const p2 = players[this.getRandom(players.length) - 1]
+//         console.log(f)
+//         console.log(players)
+//         console.log(p1, p2);
+//         player1 = new Player({
+//             ...p1,
+//             player: 1,
+//             rootSelector: 'arenas',
+//         })
+//         player2 = new Player({
+//             ...p2,
+//             player: 2,
+//             rootSelector: 'arenas',
+//         })
+//     }
+// }
+
+// const game = new Game();
+// game.start();
 // import { logs } from "./date.js"
 // import { getRandom, createElement, playerWins, createReloadButton } from './utils.js'
 // // import { player1, player2 } from './players.js'
@@ -52,6 +100,28 @@ game.start()
 //     attack(name);
 //     return $player
 // };
+// const av = (e) => {
+//     e.preventDefault();
+//     const enemy = this.enemyAttack();
+//     const player = this.playerAttack();
+//     const { value: valueEnemy, defence: defenceEnemy, hit: hitEnemy } = enemy;
+//     const { value: valuePlayer, defence: defencePlayer, hit: hitPlayer } = player;
+//     if (defencePlayer !== hitEnemy) {
+//         this.player1.changeRenderHP(valueEnemy);
+//         this.generateLogs('hit', this.player2, this.player1, valueEnemy);
+//     } else {
+//         this.generateLogs('defance', this.player2, this.player1);
+//     }
+//     if (defenceEnemy !== hitPlayer) {
+//         this.player2.changeRenderHP(valuePlayer);
+//         this.generateLogs('hit', this.player1, this.player2, valuePlayer);
+//     } else {
+//         this.generateLogs('defence', this.player1, this.player2);
+
+//     }
+//     this.showResult();
+// }
+// $formFight.addEventListener('submit', av)
 
 // function getTime() {
 //     const date = new Date();
